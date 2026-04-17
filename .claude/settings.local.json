@@ -10,7 +10,8 @@
       "Bash(npm run *)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)",
       "Skill(update-config)",
-      "Bash(bash -c 'if ! git diff --quiet || ! git diff --cached --quiet; then git add -A && git commit -m \"chore: auto-commit $\\(date \\\\\"+%Y-%m-%d %H:%M\\\\\"\\)\" --author=\"jxdon <jxdonoso@gmail.com>\"; else echo \"nothing to commit\"; fi')"
+      "Bash(bash -c 'if ! git diff --quiet || ! git diff --cached --quiet; then git add -A && git commit -m \"chore: auto-commit $\\(date \\\\\"+%Y-%m-%d %H:%M\\\\\"\\)\" --author=\"jxdon <jxdonoso@gmail.com>\"; else echo \"nothing to commit\"; fi')",
+      "Bash(bash -c 'if ! git diff --quiet || ! git diff --cached --quiet; then git add -A && git commit -m \"chore: auto-commit\" --author=\"jxdon <jxdonoso@gmail.com>\"; else echo \"nothing to commit\"; fi 2>/dev/null || true')"
     ]
   }
 }
