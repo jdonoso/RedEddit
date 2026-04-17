@@ -5,15 +5,7 @@ import Link from 'next/link';
 import { getSubreddits, saveSubreddits } from '@/lib/subreddits';
 import { getStatsBySubreddit, getRatings, ratePost, Rating } from '@/lib/ratings';
 import { DiscoverResult } from '@/app/api/discover/route';
-import { getSuggestionsForSubs, RatedSubInfo } from '@/lib/discovery';
-import { searchSubreddits, fetchPosts } from '@/lib/reddit';
-import { RedditPost } from '@/types/reddit';
 import styles from './page.module.css';
-
-interface DiscoverFeedPost {
-  post: RedditPost;
-  qualityScore: number;
-}
 
 function timeAgo(utc: number): string {
   const secs = Math.floor(Date.now() / 1000) - utc;
@@ -42,62 +34,23 @@ export default function DiscoverPage() {
     setSubscribedSet(new Set(subs.map(s => s.toLowerCase())));
 
     const stats = getStatsBySubreddit();
-    const ratedSubs: RatedSubInfo[] = stats.map(s => ({
+    const ratingsParam = JSON.stringify(stats.map(s => ({
       subreddit: s.subreddit,
       likes: s.likes,
       dislikes: s.dislikes,
       ratio: s.ratio,
-    }));
+    })));
 
+    const params = new URLSearchParams({ subs: subs.join(','), ratings: ratingsParam });
     const stored = getRatings();
     const initial: Record<string, Rating> = {};
     for (const [id, r] of Object.entries(stored)) initial[id] = r.rating;
     setPostRatings(initial);
 
-    async function loadDiscover() {
-      const curated = getSuggestionsForSubs(subs, ratedSubs);
-
-      const likedSubNames = ratedSubs.filter(r => r.ratio >= 0.6).map(r => r.subreddit).slice(0, 3);
-      const searchSeeds = likedSubNames.length > 0 ? likedSubNames : subs.slice(0, 3);
-      let searchResults: string[] = [];
-      if (searchSeeds.length > 0) {
-        searchResults = await searchSubreddits(searchSeeds.join(' '));
-      }
-
-      const subsLower = new Set(subs.map(s => s.toLowerCase()));
-      const dislikedLower = new Set(
-        ratedSubs.filter(r => r.ratio <= 0.3 && r.dislikes >= 2).map(r => r.subreddit.toLowerCase())
-      );
-      const suggestedSubs = [...curated, ...searchResults]
-        .filter(s => !subsLower.has(s.toLowerCase()))
-        .filter(s => !dislikedLower.has(s.toLowerCase()))
-        .filter((s, i, arr) => arr.findIndex(x => x.toLowerCase() === s.toLowerCase()) === i)
-        .slice(0, 40);
-
-      const allPosts: RedditPost[] = [];
-      const BATCH = 8;
-      for (let i = 0; i < suggestedSubs.length; i += BATCH) {
-        const batch = suggestedSubs.slice(i, i + BATCH);
-        const results = await Promise.allSettled(
-          batch.map(sub => fetchPosts([sub], undefined, 5, 'top', 'week'))
-        );
-        for (const r of results) {
-          if (r.status === 'fulfilled') allPosts.push(...r.value.posts);
-        }
-      }
-
-      const feed: DiscoverFeedPost[] = allPosts
-        .filter(p => !p.stickied && !p.over_18)
-        .map(p => ({ post: p, qualityScore: p.score * (p.upvote_ratio ?? 1) }))
-        .sort((a, b) => b.qualityScore - a.qualityScore)
-        .filter((item, i, arr) => arr.findIndex(x => x.post.id === item.post.id) === i)
-        .slice(0, 60);
-
-      setResult({ feed, suggestedSubs });
-      setLoading(false);
-    }
-
-    loadDiscover();
+    fetch(`/api/discover?${params}`)
+      .then(r => r.json())
+      .then(data => setResult(data))
+      .finally(() => setLoading(false));
   }, []);
 
   function handleRate(postId: string, rating: Rating, post: { title: string; subreddit: string; author: string; domain: string }) {

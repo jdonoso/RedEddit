@@ -1,7 +1,10 @@
 import { RedditPost, RedditListing, RedditComment, RedditCommentListing } from '@/types/reddit';
 
-const REDDIT_BASE = 'https://old.reddit.com';
-const HEADERS = { 'User-Agent': 'RedEddit/1.0 (personal reddit client)' };
+const REDDIT_BASE = 'https://www.reddit.com';
+const HEADERS = {
+  'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+  'Accept': 'application/json, text/plain, */*',
+};
 
 export type SortType = 'hot' | 'new' | 'top';
 export type TopTime = 'hour' | 'day' | 'week' | 'month' | 'year' | 'all';

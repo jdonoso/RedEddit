@@ -5,7 +5,6 @@ import { use } from 'react';
 import Link from 'next/link';
 import CommentThread from '@/components/CommentThread';
 import { RedditPost, RedditComment } from '@/types/reddit';
-import { fetchComments } from '@/lib/reddit';
 import styles from './page.module.css';
 
 interface Props {
@@ -30,7 +29,9 @@ export default function CommentsPage({ params }: Props) {
     async function load() {
       setLoading(true);
       try {
-        const data = await fetchComments(subreddit, id);
+        const res = await fetch(`/api/comments/${id}?subreddit=${subreddit}`);
+        if (!res.ok) throw new Error('Failed to load');
+        const data = await res.json();
         setPost(data.post);
         setComments(data.comments);
       } catch (e) {
