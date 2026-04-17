@@ -7,8 +7,8 @@ import SortBar from '@/components/SortBar';
 import Sidebar from '@/components/Sidebar';
 import { RedditPost, FilterSettings } from '@/types/reddit';
 import { getSubreddits } from '@/lib/subreddits';
-import { getFilterSettings } from '@/lib/filters';
-import { SortType, TopTime } from '@/lib/reddit';
+import { getFilterSettings, applyFilters } from '@/lib/filters';
+import { fetchPosts, SortType, TopTime } from '@/lib/reddit';
 import { getMode, setMode, AppMode, LIGHT_MODE_SUBREDDITS, LIGHT_MODE_FILTERS } from '@/lib/modes';
 
 function getActiveSubs(mode: AppMode): string[] {
@@ -45,18 +45,10 @@ export default function HomePage() {
     try {
       const subs = getActiveSubs(m);
       const filters = getActiveFilters(m);
-      const params = new URLSearchParams({
-        filters: JSON.stringify(filters),
-        subs: subs.join(','),
-        sort: s,
-        time: t,
-      });
-      if (cursor) params.set('after', cursor);
-
-      const res = await fetch(`/api/posts?${params}`);
-      const data = await res.json();
-      setPosts(data.posts ?? []);
-      setAfterCursor(data.after ?? null);
+      const listing = await fetchPosts(subs, cursor ?? undefined, 50, s, t);
+      const filtered = applyFilters(listing.posts, filters).slice(0, 25);
+      setPosts(filtered);
+      setAfterCursor(listing.after ?? null);
     } finally {
       setLoading(false);
     }

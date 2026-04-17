@@ -7,8 +7,8 @@ import Pagination from '@/components/Pagination';
 import SortBar from '@/components/SortBar';
 import Sidebar from '@/components/Sidebar';
 import { RedditPost, FilterSettings } from '@/types/reddit';
-import { getFilterSettings } from '@/lib/filters';
-import { SortType, TopTime } from '@/lib/reddit';
+import { getFilterSettings, applyFilters } from '@/lib/filters';
+import { fetchPosts, SortType, TopTime } from '@/lib/reddit';
 
 interface Props {
   params: Promise<{ subreddit: string }>;
@@ -28,18 +28,10 @@ export default function SubredditPage({ params }: Props) {
     setLoading(true);
     try {
       const filters: FilterSettings = getFilterSettings();
-      const urlParams = new URLSearchParams({
-        subs: subreddit,
-        filters: JSON.stringify(filters),
-        sort: s,
-        time: t,
-      });
-      if (cursor) urlParams.set('after', cursor);
-
-      const res = await fetch(`/api/posts?${urlParams}`);
-      const data = await res.json();
-      setPosts(data.posts ?? []);
-      setAfterCursor(data.after ?? null);
+      const listing = await fetchPosts([subreddit], cursor ?? undefined, 50, s, t);
+      const filtered = applyFilters(listing.posts, filters).slice(0, 25);
+      setPosts(filtered);
+      setAfterCursor(listing.after ?? null);
     } finally {
       setLoading(false);
     }
