@@ -28,7 +28,6 @@ export default function HomePage() {
   const [sort, setSort] = useState<SortType>('hot');
   const [time, setTime] = useState<TopTime>('week');
   const [mode, setModeState] = useState<AppMode>('serious');
-
   useEffect(() => {
     setModeState(getMode());
     const handler = (e: Event) => {
@@ -97,15 +96,19 @@ export default function HomePage() {
     window.scrollTo(0, 0);
   }
 
-  const subs = typeof window !== 'undefined' ? getActiveSubs(mode) : [];
-  const title = mode === 'light' ? 'light mode — humor & fun' : (subs.length <= 3 ? subs.map(s => `r/${s}`).join(' + ') : 'front page');
+  const [title, setTitle] = useState('front page');
+  useEffect(() => {
+    if (mode === 'light') { setTitle('light mode — humor & fun'); return; }
+    const subs = getActiveSubs(mode);
+    setTitle(subs.length <= 3 ? subs.map(s => `r/${s}`).join(' + ') : 'front page');
+  }, [mode]);
 
   return (
     <div className="page-wrap">
       <main className="page-main">
         <h1 className="page-title">{title}</h1>
         <SortBar sort={sort} time={time} onChange={handleSortChange} mode={mode} onModeToggle={handleModeToggle} />
-        <PostList posts={posts} loading={loading} />
+        <PostList posts={posts} loading={loading} source={mode === 'light' ? 'light' : 'feed'} />
         {!loading && (
           <Pagination
             currentPage={currentPage}

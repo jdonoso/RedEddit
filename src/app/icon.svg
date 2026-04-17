@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">
+  <!-- Orange head -->
+  <rect x="11" y="21" width="58" height="53" rx="17" fill="#ff4500"/>
+  <!-- Green flat-top: path with rounded top corners, flat bottom — no clipPath needed -->
+  <path d="M28,21 Q11,21 11,38 L11,44 L69,44 L69,38 Q69,21 52,21 Z" fill="#3d9e3d"/>
+  <!-- Antenna -->
+  <line x1="40" y1="21" x2="40" y2="12" stroke="#cc2000" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="40" cy="8" r="6.5" fill="#cc2000"/>
+  <!-- Eye whites -->
+  <ellipse cx="30" cy="59" rx="9" ry="10" fill="white"/>
+  <ellipse cx="50" cy="59" rx="9" ry="10" fill="white"/>
+  <!-- Red pupils -->
+  <circle cx="31" cy="58" r="5.5" fill="#cc0000"/>
+  <circle cx="51" cy="58" r="5.5" fill="#cc0000"/>
+</svg>

@@ -29,182 +29,213 @@
   color: #336699;
 }
 
-.grid {
+/* Flat ranked feed */
+.feed {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-
-.card {
   background: #fff;
   border: 1px solid #c6c6c6;
   border-radius: 3px;
   overflow: hidden;
 }
 
-.card:hover {
-  border-color: #5f99cf;
-}
-
-.cardAdded {
-  border-color: #5a9a5a;
-  background: #f8fff8;
-}
-
-.cardHeader {
+.feedRow {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
   padding: 8px 10px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 13px;
+}
+
+.feedRow:last-child {
+  border-bottom: none;
+}
+
+.feedRow:hover {
   background: #f8f8f8;
-  border-bottom: 1px solid #e8e8e8;
 }
 
-.cardLeft {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.expandBtn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #888;
+.rank {
+  color: #ccc;
   font-size: 11px;
-  padding: 0;
-  line-height: 1;
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-.expandBtn:hover {
-  color: #333;
-}
-
-.subName {
-  font-size: 14px;
+  min-width: 18px;
+  text-align: right;
+  padding-top: 2px;
+  flex-shrink: 0;
   font-weight: bold;
-  color: #336699;
+}
+
+.score {
+  color: #ff4500;
+  font-weight: bold;
+  font-size: 12px;
+  min-width: 36px;
+  text-align: right;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+}
+
+.titleLine {
+  line-height: 1.4;
+  margin-bottom: 3px;
+}
+
+.title {
+  color: #0000ff;
   text-decoration: none;
 }
 
-.subName:hover {
+.title:visited {
+  color: #6e329d;
+}
+
+.title:hover {
   text-decoration: underline;
+}
+
+.domain {
+  color: #888;
+  font-size: 11px;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.subBadge {
+  font-size: 11px;
+  font-weight: bold;
+  color: #336699;
+  text-decoration: none;
+  background: #eef3f8;
+  padding: 1px 5px;
+  border-radius: 2px;
+}
+
+.subBadge:hover {
+  color: #ff4500;
+  background: #fde8e0;
+}
+
+.metaDot {
+  color: #ccc;
+  font-size: 11px;
+}
+
+.metaText {
+  color: #aaa;
+  font-size: 11px;
+}
+
+.comments {
+  color: #336699;
+  font-size: 11px;
+  text-decoration: none;
+}
+
+.comments:hover {
+  text-decoration: underline;
+}
+
+.ratingBtns {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.rateBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 11px;
+  color: #bbb;
+  padding: 0 2px;
+  line-height: 1;
+}
+
+.rateBtn:hover {
   color: #ff4500;
 }
 
-.postCount {
-  font-size: 11px;
-  color: #aaa;
+.rateLiked {
+  color: #ff4500;
 }
 
-.addBtn {
-  font-size: 12px;
+.rateDisliked {
+  color: #7193ff;
+}
+
+.subBtn {
+  font-size: 11px;
   background: #5f99cf;
   color: white;
   border: none;
-  padding: 3px 12px;
+  padding: 1px 8px;
   cursor: pointer;
   border-radius: 2px;
   font-family: Arial, Helvetica, sans-serif;
   font-weight: bold;
   white-space: nowrap;
+  line-height: 1.6;
 }
 
-.addBtn:hover:not(:disabled) {
+.subBtn:hover:not(:disabled) {
   background: #ff4500;
 }
 
-.addedBtn {
+.subBtnDone {
   background: #5a9a5a;
   cursor: default;
 }
 
-.addedBtn:hover {
+.subBtnDone:hover {
   background: #5a9a5a !important;
 }
 
-/* Post rows inside a card */
-.postRow {
+/* Pagination */
+.pagination {
   display: flex;
-  align-items: baseline;
-  gap: 8px;
-  padding: 5px 10px;
-  border-bottom: 1px solid #f0f0f0;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0 4px;
+  font-size: 13px;
+}
+
+.pageBtn {
+  background: #f6f7f8;
+  border: 1px solid #c6c6c6;
+  padding: 3px 12px;
+  cursor: pointer;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  color: #336699;
+  border-radius: 2px;
+}
+
+.pageBtn:hover:not(:disabled) {
+  border-color: #5f99cf;
+  color: #ff4500;
+}
+
+.pageBtn:disabled {
+  color: #ccc;
+  cursor: default;
+}
+
+.pageInfo {
+  color: #888;
   font-size: 12px;
 }
 
-.postRow:last-of-type {
-  border-bottom: none;
-}
-
-.postScore {
-  color: #ff4500;
-  font-weight: bold;
-  min-width: 36px;
-  text-align: right;
-  flex-shrink: 0;
-  font-size: 11px;
-}
-
-.postBody {
-  flex: 1;
-  min-width: 0;
-  line-height: 1.4;
-}
-
-.postTitle {
-  color: #0000ff;
-  text-decoration: none;
-}
-
-.postTitle:visited {
-  color: #6e329d;
-}
-
-.postTitle:hover {
-  text-decoration: underline;
-}
-
-.postDomain {
-  color: #888;
-  font-size: 11px;
-}
-
-.postMeta {
-  color: #aaa;
-  font-size: 11px;
-  white-space: nowrap;
-}
-
-.postComments {
-  color: #336699;
-  text-decoration: none;
-}
-
-.postComments:hover {
-  text-decoration: underline;
-}
-
-.showMore {
-  display: block;
-  width: 100%;
-  background: #f8f8f8;
-  border: none;
-  border-top: 1px solid #e8e8e8;
-  padding: 5px 10px;
-  text-align: left;
-  font-size: 11px;
-  color: #336699;
-  cursor: pointer;
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-.showMore:hover {
-  background: #eef3f8;
-  color: #ff4500;
-}
-
+/* Sidebar */
 .sidebar {
   display: flex;
   flex-direction: column;
@@ -244,4 +275,34 @@
 .sideLink:hover {
   text-decoration: underline;
   color: #ff4500;
+}
+
+/* Suggested subs list in sidebar */
+.subList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.subRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.subLink {
+  font-size: 12px;
+  color: #336699;
+  text-decoration: none;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.subLink:hover {
+  color: #ff4500;
+  text-decoration: underline;
 }

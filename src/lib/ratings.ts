@@ -1,4 +1,5 @@
 export type Rating = 'like' | 'dislike';
+export type RatingSource = 'feed' | 'light' | 'discover';
 
 export interface RatedPost {
   id: string;
@@ -8,6 +9,7 @@ export interface RatedPost {
   domain: string;
   rating: Rating;
   ratedAt: number;
+  source: RatingSource;
 }
 
 const KEY = 'rededit_ratings';
@@ -21,12 +23,16 @@ export function getRatings(): Record<string, RatedPost> {
   }
 }
 
-export function ratePost(post: Omit<RatedPost, 'ratedAt' | 'rating'>, rating: Rating | null): void {
+export function ratePost(
+  post: Omit<RatedPost, 'ratedAt' | 'rating' | 'source'>,
+  rating: Rating | null,
+  source: RatingSource = 'feed'
+): void {
   const ratings = getRatings();
   if (rating === null) {
     delete ratings[post.id];
   } else {
-    ratings[post.id] = { ...post, rating, ratedAt: Date.now() };
+    ratings[post.id] = { ...post, rating, ratedAt: Date.now(), source };
   }
   localStorage.setItem(KEY, JSON.stringify(ratings));
 }

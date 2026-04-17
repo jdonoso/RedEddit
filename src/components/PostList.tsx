@@ -1,13 +1,15 @@
 import { RedditPost } from '@/types/reddit';
 import PostRow from './PostRow';
+import { RatingSource } from '@/lib/ratings';
 import styles from './PostList.module.css';
 
 interface Props {
   posts: RedditPost[];
   loading?: boolean;
+  source?: RatingSource;
 }
 
-export default function PostList({ posts, loading }: Props) {
+export default function PostList({ posts, loading, source }: Props) {
   if (loading) {
     return <div className={styles.loading}>loading posts…</div>;
   }
@@ -24,7 +26,7 @@ export default function PostList({ posts, loading }: Props) {
   return (
     <div className={styles.list}>
       {posts.map(post => (
-        <PostRow key={post.id} post={post} />
+        <PostRow key={post.id} post={post} source={source} />
       ))}
     </div>
   );

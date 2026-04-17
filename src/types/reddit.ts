@@ -17,6 +17,7 @@ export interface RedditPost {
   thumbnail: string;
   over_18: boolean;
   stickied: boolean;
+  upvote_ratio: number;
 }
 
 export interface RedditComment {

@@ -28,10 +28,13 @@ export default function Header() {
     <header className={`${styles.header} ${mode === 'light' ? styles.lightHeader : ''}`}>
       <div className={styles.inner}>
         <Link href="/" className={styles.logo}>
-          <span className={styles.logoText}>RedEddit</span>
-          <span className={styles.logoSub}>
-            {mode === 'light' ? 'light & funny mode' : 'the front page of the internet (circa 2010)'}
-          </span>
+          <img src="/logo.svg" alt="RedEddit" className={styles.logoImg} />
+          <div>
+            <span className={styles.logoText}>RedEddit</span>
+            <span className={styles.logoSub}>
+              {mode === 'light' ? 'light & funny mode' : 'the front page of the internet (circa 2010)'}
+            </span>
+          </div>
         </Link>
         <nav className={styles.nav}>
           <Link href="/">hot</Link>

@@ -3,12 +3,13 @@
 import Link from 'next/link';
 import { useState, useEffect, useCallback } from 'react';
 import { RedditPost } from '@/types/reddit';
-import { ratePost, getPostRating, Rating } from '@/lib/ratings';
+import { ratePost, getPostRating, Rating, RatingSource } from '@/lib/ratings';
 import { markSeen, isSeen } from '@/lib/history';
 import styles from './PostRow.module.css';
 
 interface Props {
   post: RedditPost;
+  source?: RatingSource;
 }
 
 function timeAgo(utc: number): string {
@@ -24,7 +25,7 @@ function formatScore(n: number): string {
   return String(n);
 }
 
-export default function PostRow({ post }: Props) {
+export default function PostRow({ post, source = 'feed' }: Props) {
   const commentsUrl = `/r/${post.subreddit}/comments/${post.id}`;
   const isExternal = !post.is_self;
 
@@ -44,7 +45,7 @@ export default function PostRow({ post }: Props) {
       subreddit: post.subreddit,
       author: post.author,
       domain: post.domain,
-    }, next);
+    }, next, source);
     setRating(next);
   }, [rating, post]);
 

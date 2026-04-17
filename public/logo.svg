@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">
+  <defs>
+    <clipPath id="headClip">
+      <rect x="11" y="21" width="58" height="53" rx="17"/>
+    </clipPath>
+  </defs>
+
+  <!-- Neck bolts -->
+  <rect x="2"  y="45" width="10" height="13" rx="4" fill="#777"/>
+  <rect x="68" y="45" width="10" height="13" rx="4" fill="#777"/>
+
+  <!-- Head -->
+  <rect x="11" y="21" width="58" height="53" rx="17" fill="#ff4500"/>
+
+  <!-- Green flat-top, clipped to head -->
+  <rect x="11" y="21" width="58" height="22" fill="#3d9e3d" clip-path="url(#headClip)"/>
+
+  <!-- Antenna -->
+  <line x1="40" y1="21" x2="40" y2="12" stroke="#cc2000" stroke-width="3.5" stroke-linecap="round"/>
+  <circle cx="40" cy="8" r="6" fill="#cc2000"/>
+
+  <!-- Forehead stitches along green/orange seam -->
+  <g stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round">
+    <line x1="22" y1="40" x2="22" y2="45"/>
+    <line x1="32" y1="39" x2="32" y2="44"/>
+    <line x1="48" y1="39" x2="48" y2="44"/>
+    <line x1="58" y1="40" x2="58" y2="45"/>
+  </g>
+
+  <!-- Angry eyebrows -->
+  <line x1="19" y1="49" x2="33" y2="53" stroke="#1a1a1a" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="47" y1="53" x2="61" y2="49" stroke="#1a1a1a" stroke-width="3.5" stroke-linecap="round"/>
+
+  <!-- Eye whites -->
+  <ellipse cx="30" cy="59" rx="8.5" ry="9.5" fill="white"/>
+  <ellipse cx="50" cy="59" rx="8.5" ry="9.5" fill="white"/>
+
+  <!-- Red pupils -->
+  <circle cx="31" cy="58" r="5"   fill="#cc0000"/>
+  <circle cx="51" cy="58" r="5"   fill="#cc0000"/>
+
+  <!-- Glints -->
+  <circle cx="33" cy="55" r="1.8" fill="white"/>
+  <circle cx="53" cy="55" r="1.8" fill="white"/>
+
+  <!-- Stitched mouth -->
+  <path d="M 27 70 Q 40 76 53 70" stroke="#1a1a1a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <line x1="33" y1="68" x2="31" y2="73" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+  <line x1="40" y1="71" x2="40" y2="76" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+  <line x1="47" y1="68" x2="49" y2="73" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+</svg>

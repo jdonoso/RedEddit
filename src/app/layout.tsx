@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 export const metadata: Metadata = {
   title: 'RedEddit',
   description: 'The front page of the internet, circa 2010.',
+  icons: { icon: '/icon.svg' },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

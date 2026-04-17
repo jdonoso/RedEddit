@@ -24,7 +24,6 @@ export default function SubredditPage({ params }: Props) {
   const [afterCursor, setAfterCursor] = useState<string | null>(null);
   const [sort, setSort] = useState<SortType>('hot');
   const [time, setTime] = useState<TopTime>('week');
-
   const fetchPage = useCallback(async (cursor: string | null, s: SortType, t: TopTime) => {
     setLoading(true);
     try {
@@ -82,7 +81,7 @@ export default function SubredditPage({ params }: Props) {
       <main className="page-main">
         <h1 className="page-title">r/{subreddit}</h1>
         <SortBar sort={sort} time={time} onChange={handleSortChange} />
-        <PostList posts={posts} loading={loading} />
+        <PostList posts={posts} loading={loading} source="feed" />
         {!loading && (
           <Pagination
             currentPage={currentPage}
