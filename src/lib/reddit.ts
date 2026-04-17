@@ -1,6 +1,6 @@
 import { RedditPost, RedditListing, RedditComment, RedditCommentListing } from '@/types/reddit';
 
-const REDDIT_BASE = 'https://www.reddit.com';
+const REDDIT_BASE = 'https://old.reddit.com';
 const HEADERS = { 'User-Agent': 'RedEddit/1.0 (personal reddit client)' };
 
 export type SortType = 'hot' | 'new' | 'top';
