@@ -91,6 +91,7 @@ export default function StatsPage() {
                         {s.posts.map(p => (
                           <div key={p.id} className={`${styles.postItem} ${p.rating === 'like' ? styles.postLiked : styles.postDisliked}`}>
                             <span className={styles.postRating}>{p.rating === 'like' ? '▲' : '▼'}</span>
+                            <span className={styles.postSource}>{p.source ?? 'feed'}</span>
                             <a href={`/r/${p.subreddit}/comments/${p.id}`} className={styles.postTitle}>
                               {p.title}
                             </a>
