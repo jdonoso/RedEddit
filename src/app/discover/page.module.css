@@ -1,0 +1,170 @@
+.loading {
+  background: #fff;
+  border: 1px solid #c6c6c6;
+  border-radius: 3px;
+  padding: 24px;
+  text-align: center;
+  color: #888;
+  font-size: 13px;
+}
+
+.intro {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+
+.empty {
+  background: #fff;
+  border: 1px solid #c6c6c6;
+  border-radius: 3px;
+  padding: 24px;
+  text-align: center;
+  color: #888;
+  font-size: 13px;
+}
+
+.empty a {
+  color: #336699;
+}
+
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #c6c6c6;
+  border-radius: 3px;
+  padding: 10px 14px;
+  transition: border-color 0.1s;
+}
+
+.card:hover {
+  border-color: #5f99cf;
+}
+
+.cardAdded {
+  border-color: #5a9a5a;
+  background: #f8fff8;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.subName {
+  font-size: 15px;
+  font-weight: bold;
+  color: #336699;
+  text-decoration: none;
+}
+
+.subName:hover {
+  text-decoration: underline;
+  color: #ff4500;
+}
+
+.addBtn {
+  font-size: 12px;
+  background: #5f99cf;
+  color: white;
+  border: none;
+  padding: 3px 12px;
+  cursor: pointer;
+  border-radius: 2px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+}
+
+.addBtn:hover:not(:disabled) {
+  background: #ff4500;
+}
+
+.addedBtn {
+  background: #5a9a5a;
+  cursor: default;
+}
+
+.addedBtn:hover {
+  background: #5a9a5a !important;
+}
+
+.preview {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.previewItem {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  font-size: 12px;
+}
+
+.previewScore {
+  color: #ff4500;
+  font-weight: bold;
+  min-width: 36px;
+  text-align: right;
+  flex-shrink: 0;
+  font-size: 11px;
+}
+
+.previewTitle {
+  color: #444;
+  line-height: 1.3;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sideBox {
+  background: #fff;
+  border: 1px solid #c6c6c6;
+  border-radius: 3px;
+  padding: 12px 14px;
+}
+
+.sideTitle {
+  font-size: 12px;
+  font-weight: bold;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.sideText {
+  font-size: 12px;
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.sideLink {
+  font-size: 12px;
+  color: #336699;
+  text-decoration: none;
+  display: block;
+}
+
+.sideLink:hover {
+  text-decoration: underline;
+  color: #ff4500;
+}

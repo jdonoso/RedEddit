@@ -1,0 +1,148 @@
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 6px 4px;
+  border-bottom: 1px solid #e0e0e0;
+  background: #fff;
+}
+
+.row:hover {
+  background: #f8f8f8;
+}
+
+.score {
+  min-width: 48px;
+  text-align: center;
+  background: #f0f0f0;
+  border: 1px solid #c6c6c6;
+  border-radius: 2px;
+  padding: 4px 2px;
+  flex-shrink: 0;
+}
+
+.scoreNum {
+  font-size: 14px;
+  font-weight: bold;
+  color: #ff4500;
+  display: block;
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  margin: 0 0 3px 0;
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.titleLink {
+  color: #0000ff;
+  text-decoration: none;
+}
+
+.titleLink:visited {
+  color: #6e329d;
+}
+
+.titleLink:hover {
+  text-decoration: underline;
+}
+
+.domain {
+  font-size: 11px;
+  color: #888;
+}
+
+.flair {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 10px;
+  background: #5f99cf;
+  color: white;
+  padding: 1px 5px;
+  border-radius: 2px;
+  vertical-align: middle;
+}
+
+.meta {
+  margin: 0;
+  font-size: 11px;
+  color: #888;
+}
+
+.author {
+  color: #336699;
+  font-weight: bold;
+}
+
+.subreddit {
+  color: #336699;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.subreddit:hover {
+  text-decoration: underline;
+}
+
+.comments {
+  color: #336699;
+  text-decoration: none;
+}
+
+.comments:hover {
+  text-decoration: underline;
+  color: #ff4500;
+}
+
+.seen .titleLink {
+  color: #888;
+}
+
+.seen .titleLink:visited {
+  color: #aaa;
+}
+
+.seen {
+  opacity: 0.65;
+}
+
+.ratingButtons {
+  margin-left: 8px;
+  display: inline-flex;
+  gap: 2px;
+  vertical-align: middle;
+}
+
+.rateBtn {
+  background: none;
+  border: 1px solid #ddd;
+  color: #bbb;
+  font-size: 10px;
+  padding: 0 4px;
+  cursor: pointer;
+  border-radius: 2px;
+  line-height: 16px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.rateBtn:hover {
+  border-color: #999;
+  color: #555;
+}
+
+.liked {
+  background: #e8f4e8;
+  border-color: #5a9a5a;
+  color: #3a7a3a;
+}
+
+.disliked {
+  background: #fce8e8;
+  border-color: #c06060;
+  color: #a03030;
+}
