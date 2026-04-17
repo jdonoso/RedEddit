@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import { RedditComment } from '@/types/reddit';
 import styles from './CommentThread.module.css';
 
@@ -15,6 +18,8 @@ function timeAgo(utc: number): string {
 }
 
 function CommentNode({ comment, depth = 0 }: { comment: RedditComment; depth?: number }) {
+  const [collapsed, setCollapsed] = useState(false);
+
   const replies =
     comment.replies &&
     typeof comment.replies === 'object' &&
@@ -25,20 +30,29 @@ function CommentNode({ comment, depth = 0 }: { comment: RedditComment; depth?: n
       : [];
 
   return (
-    <div className={`${styles.comment} ${depth > 0 ? styles.nested : ''}`}>
-      <div className={styles.meta}>
+    <div className={`${styles.comment} ${depth > 0 ? styles.nested : ''} ${collapsed ? styles.collapsed : ''}`}>
+      <div className={styles.meta} onClick={() => setCollapsed(c => !c)} role="button" tabIndex={0}
+        onKeyDown={e => e.key === 'Enter' && setCollapsed(c => !c)}>
+        <span className={styles.collapseIndicator}>{collapsed ? '[+]' : '[–]'}</span>
         <span className={styles.author}>{comment.author}</span>
         <span className={styles.score}>{comment.score} points</span>
         <span className={styles.time}>{timeAgo(comment.created_utc)}</span>
+        {collapsed && replies.length > 0 && (
+          <span className={styles.hiddenCount}>{replies.length} repl{replies.length === 1 ? 'y' : 'ies'} hidden</span>
+        )}
       </div>
-      <div
-        className={styles.body}
-        dangerouslySetInnerHTML={{ __html: comment.body_html }}
-      />
-      {replies.length > 0 && (
-        <div className={styles.replies}>
-          <CommentThread comments={replies} depth={depth + 1} />
-        </div>
+      {!collapsed && (
+        <>
+          <div
+            className={styles.body}
+            dangerouslySetInnerHTML={{ __html: comment.body_html }}
+          />
+          {replies.length > 0 && (
+            <div className={styles.replies}>
+              <CommentThread comments={replies} depth={depth + 1} />
+            </div>
+          )}
+        </>
       )}
     </div>
   );

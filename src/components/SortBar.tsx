@@ -1,12 +1,15 @@
 'use client';
 
 import { SortType, TopTime } from '@/lib/reddit';
+import { AppMode } from '@/lib/modes';
 import styles from './SortBar.module.css';
 
 interface Props {
   sort: SortType;
   time: TopTime;
   onChange: (sort: SortType, time: TopTime) => void;
+  mode?: AppMode;
+  onModeToggle?: () => void;
 }
 
 const SORTS: { value: SortType; label: string }[] = [
@@ -24,7 +27,7 @@ const TIMES: { value: TopTime; label: string }[] = [
   { value: 'all', label: 'all time' },
 ];
 
-export default function SortBar({ sort, time, onChange }: Props) {
+export default function SortBar({ sort, time, onChange, mode, onModeToggle }: Props) {
   return (
     <div className={styles.bar}>
       <span className={styles.label}>sorted by:</span>
@@ -47,6 +50,18 @@ export default function SortBar({ sort, time, onChange }: Props) {
             <option key={t.value} value={t.value}>{t.label}</option>
           ))}
         </select>
+      )}
+      {onModeToggle && (
+        <>
+          <span className={styles.divider}>|</span>
+          <button
+            className={`${styles.modeBtn} ${mode === 'light' ? styles.modeLightActive : ''}`}
+            onClick={onModeToggle}
+            title={mode === 'light' ? 'Switch to serious mode' : 'Switch to humor/light mode'}
+          >
+            {mode === 'light' ? '😄 light mode' : '🎭 go light'}
+          </button>
+        </>
       )}
     </div>
   );

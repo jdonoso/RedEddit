@@ -22,6 +22,28 @@
   display: flex;
   gap: 8px;
   align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.meta:hover {
+  color: #555;
+}
+
+.collapseIndicator {
+  color: #aaa;
+  font-size: 10px;
+  font-family: monospace;
+  flex-shrink: 0;
+}
+
+.collapsed .meta {
+  margin-bottom: 0;
+}
+
+.hiddenCount {
+  color: #aaa;
+  font-style: italic;
 }
 
 .author {

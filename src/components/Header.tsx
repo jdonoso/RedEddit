@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState, useEffect, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { getMode, setMode, AppMode } from '@/lib/modes';
+import { getMode, AppMode } from '@/lib/modes';
 import styles from './Header.module.css';
 
 export default function Header() {
@@ -24,13 +24,6 @@ export default function Header() {
     if (sub) router.push(`/r/${sub}`);
   }
 
-  function toggleMode() {
-    const next: AppMode = mode === 'serious' ? 'light' : 'serious';
-    setMode(next);
-    setModeState(next);
-    router.refresh();
-  }
-
   return (
     <header className={`${styles.header} ${mode === 'light' ? styles.lightHeader : ''}`}>
       <div className={styles.inner}>
@@ -46,13 +39,6 @@ export default function Header() {
           <Link href="/stats">my ratings</Link>
           <Link href="/settings">settings</Link>
         </nav>
-        <button
-          className={`${styles.modeBtn} ${mode === 'light' ? styles.modeLightActive : ''}`}
-          onClick={toggleMode}
-          title={mode === 'light' ? 'Switch to serious mode' : 'Switch to humor/light mode'}
-        >
-          {mode === 'light' ? '😄 light' : '🎭 go light'}
-        </button>
         <form className={styles.searchForm} onSubmit={handleSearch}>
           <input
             className={styles.searchInput}

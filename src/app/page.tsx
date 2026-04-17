@@ -9,7 +9,7 @@ import { RedditPost, FilterSettings } from '@/types/reddit';
 import { getSubreddits } from '@/lib/subreddits';
 import { getFilterSettings } from '@/lib/filters';
 import { SortType, TopTime } from '@/lib/reddit';
-import { getMode, AppMode, LIGHT_MODE_SUBREDDITS, LIGHT_MODE_FILTERS } from '@/lib/modes';
+import { getMode, setMode, AppMode, LIGHT_MODE_SUBREDDITS, LIGHT_MODE_FILTERS } from '@/lib/modes';
 
 function getActiveSubs(mode: AppMode): string[] {
   return mode === 'light' ? LIGHT_MODE_SUBREDDITS : getSubreddits();
@@ -68,6 +68,11 @@ export default function HomePage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode]);
 
+  function handleModeToggle() {
+    const next: AppMode = mode === 'serious' ? 'light' : 'serious';
+    setMode(next);
+  }
+
   function handleSortChange(newSort: SortType, newTime: TopTime) {
     setSort(newSort);
     setTime(newTime);
@@ -99,7 +104,7 @@ export default function HomePage() {
     <div className="page-wrap">
       <main className="page-main">
         <h1 className="page-title">{title}</h1>
-        <SortBar sort={sort} time={time} onChange={handleSortChange} />
+        <SortBar sort={sort} time={time} onChange={handleSortChange} mode={mode} onModeToggle={handleModeToggle} />
         <PostList posts={posts} loading={loading} />
         {!loading && (
           <Pagination
