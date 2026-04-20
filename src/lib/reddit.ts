@@ -1,10 +1,12 @@
 import { RedditPost, RedditListing, RedditComment, RedditCommentListing } from '@/types/reddit';
 
-const REDDIT_BASE = 'https://www.reddit.com';
-const HEADERS = { 'User-Agent': 'RedEddit/1.0 (personal reddit client)' };
-
 export type SortType = 'hot' | 'new' | 'top';
 export type TopTime = 'hour' | 'day' | 'week' | 'month' | 'year' | 'all';
+
+function proxyUrl(path: string, params: URLSearchParams): string {
+  const base = process.env.NEXT_PUBLIC_REDDIT_PROXY_URL ?? process.env.REDDIT_PROXY_URL ?? 'https://www.reddit.com';
+  return `${base}${path}?${params}`;
+}
 
 export async function fetchPosts(
   subreddits: string[],
@@ -18,10 +20,7 @@ export async function fetchPosts(
   if (after) params.set('after', after);
   if (sort === 'top') params.set('t', time);
 
-  const res = await fetch(`${REDDIT_BASE}/r/${multi}/${sort}.json?${params}`, {
-    headers: HEADERS,
-    next: { revalidate: 60 },
-  });
+  const res = await fetch(proxyUrl(`/r/${multi}/${sort}.json`, params));
 
   if (!res.ok) throw new Error(`Reddit API error: ${res.status}`);
 
@@ -43,10 +42,8 @@ export async function fetchComments(
   subreddit: string,
   postId: string
 ): Promise<{ post: RedditPost; comments: RedditComment[] }> {
-  const res = await fetch(
-    `${REDDIT_BASE}/r/${subreddit}/comments/${postId}.json?raw_json=1&limit=500`,
-    { headers: HEADERS, next: { revalidate: 60 } }
-  );
+  const params = new URLSearchParams({ raw_json: '1', limit: '500' });
+  const res = await fetch(proxyUrl(`/r/${subreddit}/comments/${postId}.json`, params));
 
   if (!res.ok) throw new Error(`Reddit API error: ${res.status}`);
 
@@ -60,10 +57,7 @@ export async function fetchComments(
 
 export async function searchSubreddits(query: string): Promise<string[]> {
   const params = new URLSearchParams({ q: query, limit: '10', raw_json: '1' });
-  const res = await fetch(`${REDDIT_BASE}/subreddits/search.json?${params}`, {
-    headers: HEADERS,
-    next: { revalidate: 300 },
-  });
+  const res = await fetch(proxyUrl('/subreddits/search.json', params));
   if (!res.ok) return [];
   const json = await res.json();
   return (json.data?.children ?? [])
