@@ -53,6 +53,15 @@
   border-radius: 2px;
 }
 
+.newTimes {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: 4px;
+  padding-left: 8px;
+  border-left: 1px solid #c6c6c6;
+}
+
 .divider {
   color: #ccc;
   margin: 0 4px;

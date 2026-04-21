@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+
+export const runtime = 'edge';
 import { getSuggestionsForSubs, RatedSubInfo } from '@/lib/discovery';
 import { searchSubreddits, fetchPosts } from '@/lib/reddit';
 import { RedditPost } from '@/types/reddit';

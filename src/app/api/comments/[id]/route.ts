@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+
+export const runtime = 'edge';
 import { fetchComments } from '@/lib/reddit';
 
 export async function GET(
