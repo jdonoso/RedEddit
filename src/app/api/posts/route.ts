@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+
+export const runtime = 'edge';
 import { fetchPosts, SortType, TopTime } from '@/lib/reddit';
 import { applyFilters, DEFAULT_FILTER_SETTINGS } from '@/lib/filters';
 import { FilterSettings } from '@/types/reddit';

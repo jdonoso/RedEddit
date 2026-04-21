@@ -18,14 +18,14 @@ const SORTS: { value: SortType; label: string }[] = [
   { value: 'top', label: 'top' },
 ];
 
-const TIMES: { value: TopTime; label: string }[] = [
-  { value: 'hour', label: 'past hour' },
-  { value: 'day', label: 'today' },
-  { value: 'week', label: 'this week' },
-  { value: 'month', label: 'this month' },
-  { value: 'year', label: 'this year' },
-  { value: 'all', label: 'all time' },
+const NEW_TIMES: { value: TopTime; label: string }[] = [
+  { value: '4h',   label: '4h' },
+  { value: '12h',  label: '12h' },
+  { value: 'day',  label: '1d' },
+  { value: 'week', label: '1w' },
 ];
+
+const NEW_TIME_VALUES = new Set<TopTime>(NEW_TIMES.map(t => t.value));
 
 export default function SortBar({ sort, time, onChange, mode, onModeToggle }: Props) {
   return (
@@ -35,22 +35,22 @@ export default function SortBar({ sort, time, onChange, mode, onModeToggle }: Pr
         <button
           key={s.value}
           className={`${styles.btn} ${sort === s.value ? styles.active : ''}`}
-          onClick={() => onChange(s.value, time)}
+          onClick={() => onChange(s.value, NEW_TIME_VALUES.has(time) ? time : 'day')}
         >
           {s.label}
         </button>
       ))}
-      {sort === 'top' && (
-        <select
-          className={styles.timeSelect}
-          value={time}
-          onChange={e => onChange('top', e.target.value as TopTime)}
-        >
-          {TIMES.map(t => (
-            <option key={t.value} value={t.value}>{t.label}</option>
-          ))}
-        </select>
-      )}
+      <span className={styles.newTimes}>
+        {NEW_TIMES.map(t => (
+          <button
+            key={t.value}
+            className={`${styles.btn} ${time === t.value ? styles.active : ''}`}
+            onClick={() => onChange(sort, t.value)}
+          >
+            {t.label}
+          </button>
+        ))}
+      </span>
       {onModeToggle && (
         <>
           <span className={styles.divider}>|</span>
