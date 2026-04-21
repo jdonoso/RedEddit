@@ -2,12 +2,35 @@ import { RedditPost, RedditListing, RedditComment, RedditCommentListing } from '
 
 const REDDIT_BASE = 'https://www.reddit.com';
 const HEADERS = {
-  'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.6367.207 Safari/537.36',
   'Accept': 'application/json, text/plain, */*',
 };
 
 export type SortType = 'hot' | 'new' | 'top';
-export type TopTime = 'hour' | 'day' | 'week' | 'month' | 'year' | 'all';
+export type TopTime = 'hour' | 'day' | 'week' | 'month' | 'year' | 'all' | '4h' | '12h';
+
+function timeToCutoff(time: TopTime): number {
+  const now = Math.floor(Date.now() / 1000);
+  switch (time) {
+    case '4h':   return now - 4 * 3600;
+    case '12h':  return now - 12 * 3600;
+    case 'day':  return now - 86400;
+    case 'week': return now - 7 * 86400;
+    default:     return 0;
+  }
+}
+
+function topTimeParam(time: TopTime): string {
+  switch (time) {
+    case '4h':
+    case '12h':
+    case 'day':  return 'day';
+    case 'week': return 'week';
+    case 'month': return 'month';
+    case 'year': return 'year';
+    default:     return 'day';
+  }
+}
 
 export async function fetchPosts(
   subreddits: string[],
@@ -17,9 +40,12 @@ export async function fetchPosts(
   time: TopTime = 'week'
 ): Promise<RedditListing> {
   const multi = subreddits.join('+');
-  const params = new URLSearchParams({ limit: String(limit), raw_json: '1' });
+  const cutoff = timeToCutoff(time);
+  const needsClientFilter = cutoff > 0;
+  const fetchLimit = needsClientFilter ? 100 : limit;
+  const params = new URLSearchParams({ limit: String(fetchLimit), raw_json: '1' });
   if (after) params.set('after', after);
-  if (sort === 'top') params.set('t', time);
+  if (sort === 'top') params.set('t', topTimeParam(time));
 
   const res = await fetch(`${REDDIT_BASE}/r/${multi}/${sort}.json?${params}`, {
     headers: HEADERS,
@@ -31,9 +57,13 @@ export async function fetchPosts(
   const json = await res.json();
   const children = json.data?.children ?? [];
 
-  const posts: RedditPost[] = children
+  let posts: RedditPost[] = children
     .filter((c: { kind: string }) => c.kind === 't3')
     .map((c: { data: RedditPost }) => c.data);
+
+  if (needsClientFilter) {
+    posts = posts.filter(p => p.created_utc >= cutoff).slice(0, limit);
+  }
 
   return {
     posts,

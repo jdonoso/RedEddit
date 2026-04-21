@@ -23,7 +23,7 @@ export default function SubredditPage({ params }: Props) {
   const [cursors, setCursors] = useState<(string | null)[]>([null]);
   const [afterCursor, setAfterCursor] = useState<string | null>(null);
   const [sort, setSort] = useState<SortType>('hot');
-  const [time, setTime] = useState<TopTime>('week');
+  const [time, setTime] = useState<TopTime>('day');
   const fetchPage = useCallback(async (cursor: string | null, s: SortType, t: TopTime) => {
     setLoading(true);
     try {

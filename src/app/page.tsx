@@ -26,7 +26,7 @@ export default function HomePage() {
   const [cursors, setCursors] = useState<(string | null)[]>([null]);
   const [afterCursor, setAfterCursor] = useState<string | null>(null);
   const [sort, setSort] = useState<SortType>('hot');
-  const [time, setTime] = useState<TopTime>('week');
+  const [time, setTime] = useState<TopTime>('day');
   const [mode, setModeState] = useState<AppMode>('serious');
   useEffect(() => {
     setModeState(getMode());
