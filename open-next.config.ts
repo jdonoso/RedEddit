@@ -1,9 +1,22 @@
-// default open-next.config.ts file created by @opennextjs/cloudflare
 import { defineCloudflareConfig } from "@opennextjs/cloudflare";
-// import r2IncrementalCache from "@opennextjs/cloudflare/overrides/incremental-cache/r2-incremental-cache";
 
-export default defineCloudflareConfig({
-	// For best results consider enabling R2 caching
-	// See https://opennext.js.org/cloudflare/caching for more details
-	// incrementalCache: r2IncrementalCache
-});
+export default {
+  ...defineCloudflareConfig(),
+  functions: {
+    "api-posts": {
+      runtime: "edge" as const,
+      routes: ["app/api/posts/route"] as const,
+      patterns: ["/api/posts"],
+    },
+    "api-discover": {
+      runtime: "edge" as const,
+      routes: ["app/api/discover/route"] as const,
+      patterns: ["/api/discover"],
+    },
+    "api-comments": {
+      runtime: "edge" as const,
+      routes: ["app/api/comments/[id]/route"] as const,
+      patterns: ["/api/comments/*"],
+    },
+  },
+};
