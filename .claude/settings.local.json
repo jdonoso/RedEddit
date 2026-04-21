@@ -1,23 +1,20 @@
 {
   "permissions": {
     "allow": [
+      "Bash(npx create-next-app@latest . --typescript --app --no-tailwind --no-eslint --src-dir --import-alias \"@/*\" --yes)",
+      "Bash(npx create-next-app@latest . --typescript --app --no-tailwind --no-eslint --src-dir --import-alias \"@/*\" --yes --name rededit)",
+      "Read(//c/Projects/**)",
+      "Bash(npx create-next-app@latest rededit-app --typescript --app --no-tailwind --no-eslint --src-dir --import-alias \"@/*\" --yes)",
+      "Bash(cp -r \"/c/Projects/rededit-app/.\" \"/c/Projects/Rededit/\")",
+      "Bash(rm -rf \"/c/Projects/rededit-app\")",
       "Bash(npm run *)",
-      "Bash(git *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)",
       "Skill(update-config)",
-      "Bash(npx tsc *)"
-    ]
-  },
-  "hooks": {
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "if ! git -C /c/Projects/Rededit diff --quiet || ! git -C /c/Projects/Rededit diff --cached --quiet; then git -C /c/Projects/Rededit add -A && git -C /c/Projects/Rededit commit -m \"chore: auto-commit\" --author=\"jxdon <jxdonoso@gmail.com>\"; fi 2>/dev/null || true",
-            "statusMessage": "Committing changes..."
-          }
-        ]
-      }
+      "Bash(bash -c 'if ! git diff --quiet || ! git diff --cached --quiet; then git add -A && git commit -m \"chore: auto-commit $\\(date \\\\\"+%Y-%m-%d %H:%M\\\\\"\\)\" --author=\"jxdon <jxdonoso@gmail.com>\"; else echo \"nothing to commit\"; fi')",
+      "Bash(bash -c 'if ! git diff --quiet || ! git diff --cached --quiet; then git add -A && git commit -m \"chore: auto-commit\" --author=\"jxdon <jxdonoso@gmail.com>\"; else echo \"nothing to commit\"; fi 2>/dev/null || true')",
+      "Bash(node *)",
+      "Bash(npx tsc *)",
+      "Bash(git *)"
     ]
   }
 }
