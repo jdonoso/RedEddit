@@ -38,7 +38,10 @@
           "binding": "REDDIT_PROXY",
           "service": "rededit-proxy"
         }
-      ]
+      ],
+      "images": {
+        "binding": "IMAGES"
+      }
     }
   }
 }
