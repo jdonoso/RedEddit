@@ -25,5 +25,20 @@
   },
   "observability": {
     "enabled": true
+  },
+  "env": {
+    "staging": {
+      "name": "rededit-staging",
+      "services": [
+        {
+          "binding": "WORKER_SELF_REFERENCE",
+          "service": "rededit-staging"
+        },
+        {
+          "binding": "REDDIT_PROXY",
+          "service": "rededit-proxy"
+        }
+      ]
+    }
   }
 }
