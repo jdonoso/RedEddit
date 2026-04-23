@@ -48,3 +48,6 @@ next-env.d.ts
 .dev.vars*
 !.dev.vars.example
 !.env.example
+
+# Claude Code worktrees (treated as gitlinks but should be local-only)
+.claude/worktrees/
