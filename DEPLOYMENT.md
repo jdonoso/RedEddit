@@ -70,6 +70,27 @@ Differences that matter:
 4. If both: it's a code bug, not a build/deploy issue.
 5. Roll back on the affected target while investigating.
 
+## CI/CD (GitHub Actions)
+
+The canonical deploy path is `.github/workflows/deploy.yml`:
+
+- Push to `main` → Linux runner → `npm ci` → `npm run build:cf` → deploy staging → smoke
+- Manual approval gate (GitHub Environments → `production`) → deploy prod → smoke
+
+This eliminates the entire class of Windows OpenNext bugs because the runner is Linux. Local `npm run deploy:*` is for emergencies only.
+
+### One-time CI setup (user action required)
+
+1. Create a Cloudflare API token at https://dash.cloudflare.com/profile/api-tokens — use the "Edit Cloudflare Workers" template, scoped to your account.
+2. Find your Cloudflare Account ID in the right sidebar of any Workers page in the dashboard.
+3. Add two repo secrets at https://github.com/jdonoso/RedEddit/settings/secrets/actions:
+   - `CLOUDFLARE_API_TOKEN`
+   - `CLOUDFLARE_ACCOUNT_ID`
+4. Create a GitHub Environment named `production` at https://github.com/jdonoso/RedEddit/settings/environments — add yourself as a required reviewer. This forces a manual approval click between staging and prod.
+5. (Recommended) Enable branch protection on `main` requiring the `staging` job to pass before merge.
+
+Until step 3 is complete, the workflow runs but the deploy steps will fail authentication. Local `npm run deploy:staging` continues to work in the meantime.
+
 ## Drift policy
 
 Any binding, env var, secret, or compat flag added to top-level `wrangler.jsonc` MUST also be added under `env.staging`. Any new Cloudflare secret set via `wrangler secret put` in prod must also be set with `--env staging`.

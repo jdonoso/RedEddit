@@ -12,13 +12,20 @@ let failures = 0;
 function pass(name) { console.log(`  ✓ ${name}`); }
 function fail(name, why) { console.error(`  ✗ ${name} — ${why}`); failures += 1; }
 
-async function getJson(path) {
+async function getJson(path, { retries = 3, delayMs = 2000 } = {}) {
   const url = base + path;
-  const res = await fetch(url);
-  const text = await res.text();
-  let json = null;
-  try { json = JSON.parse(text); } catch { /* not json */ }
-  return { status: res.status, text, json, url };
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    const res = await fetch(url);
+    const text = await res.text();
+    let json = null;
+    try { json = JSON.parse(text); } catch { /* not json */ }
+    // Retry on 5xx (cold-start / transient) but not on 4xx (real bug).
+    if (res.status >= 500 && attempt < retries) {
+      await new Promise(r => setTimeout(r, delayMs));
+      continue;
+    }
+    return { status: res.status, text, json, url };
+  }
 }
 
 console.log(`Smoke testing ${base}`);
