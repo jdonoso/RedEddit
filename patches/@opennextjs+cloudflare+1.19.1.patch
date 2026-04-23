@@ -1,0 +1,31 @@
+diff --git a/node_modules/@opennextjs/cloudflare/dist/cli/build/open-next/createServerBundle.js b/node_modules/@opennextjs/cloudflare/dist/cli/build/open-next/createServerBundle.js
+index d5437f5..9c2b44d 100644
+--- a/node_modules/@opennextjs/cloudflare/dist/cli/build/open-next/createServerBundle.js
++++ b/node_modules/@opennextjs/cloudflare/dist/cli/build/open-next/createServerBundle.js
+@@ -36,7 +36,7 @@ export async function createServerBundle(options, codeCustomization) {
+     }
+     const promises = functions.map(async ([name, fnOptions]) => {
+         const routes = fnOptions.routes;
+-        routes.forEach((route) => foundRoutes.add(route));
++        routes.forEach((route) => foundRoutes.add(route.replace(/\\/g, '/')));
+         if (fnOptions.runtime === "edge") {
+             await generateEdgeBundle(name, options, fnOptions);
+         }
+@@ -55,7 +55,7 @@ export async function createServerBundle(options, codeCustomization) {
+     if (fs.existsSync(path.join(serverPath, "app"))) {
+         const appPath = path.join(serverPath, "app");
+         buildHelper.traverseFiles(appPath, ({ relativePath }) => relativePath.endsWith("page.js") || relativePath.endsWith("route.js"), ({ relativePath }) => {
+-            const route = `app/${relativePath.replace(/\.js$/, "")}`;
++            const route = `app/${relativePath.replace(/\.js$/, "").replace(/\\/g, '/')}`;
+             if (!foundRoutes.has(route)) {
+                 remainingRoutes.add(route);
+             }
+@@ -65,7 +65,7 @@ export async function createServerBundle(options, codeCustomization) {
+     if (fs.existsSync(path.join(serverPath, "pages"))) {
+         const pagePath = path.join(serverPath, "pages");
+         buildHelper.traverseFiles(pagePath, ({ relativePath }) => relativePath.endsWith(".js"), ({ relativePath }) => {
+-            const route = `pages/${relativePath.replace(/\.js$/, "")}`;
++            const route = `pages/${relativePath.replace(/\.js$/, "").replace(/\\/g, '/')}`;
+             if (!foundRoutes.has(route)) {
+                 remainingRoutes.add(route);
+             }

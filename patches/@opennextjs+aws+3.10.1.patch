@@ -1,0 +1,13 @@
+diff --git a/node_modules/@opennextjs/aws/dist/build/helper.js b/node_modules/@opennextjs/aws/dist/build/helper.js
+index 0fb8083..446311c 100644
+--- a/node_modules/@opennextjs/aws/dist/build/helper.js
++++ b/node_modules/@opennextjs/aws/dist/build/helper.js
+@@ -343,7 +343,7 @@ export function printOpenNextVersion(options) {
+  * the app directory, but the compiled config is in the root of the monorepo.
+  */
+ export function initOutputDir(options) {
+-    fs.rmSync(options.outputDir, { recursive: true, force: true });
++    try { fs.rmSync(options.outputDir, { recursive: true, force: true }); } catch (_) {}
+     const { buildDir } = options;
+     fs.mkdirSync(buildDir, { recursive: true });
+     fs.cpSync(options.tempBuildDir, buildDir, { recursive: true });

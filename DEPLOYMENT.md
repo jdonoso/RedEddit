@@ -1,133 +1,75 @@
 # Deployment Playbook
 
-## What has broken, and why
+## TL;DR
 
-Every production incident in this project traced back to the same root mistake: **code was deployed to production without being tested in a production-like environment first**. The Windows-specific build bugs made it worse by introducing silent errors that only appeared at deploy time.
+```bash
+npm run deploy:staging   # build + deploy to staging + smoke tests
+# verify staging in a browser
+npm run deploy:prod      # only after staging passes
+wrangler tail rededit    # watch prod for 2-5 min
+```
 
-Specific failures:
+If anything fails, the chain halts before reaching production. There are no manual steps on Windows anymore — `fix-next-env.mjs`, `patch-package`, and `preflight.mjs` cover the gotchas that used to cause incidents.
 
-| Incident | Cause |
+---
+
+## What the scripts do
+
+| Script | Purpose |
 |---|---|
-| API 404s in `3ff2d3cb` | `open-next.config.ts` excluded API routes from the default bundle but didn't deploy them as separate workers |
-| Duplicate exports in `next-env.mjs` | OpenNext appends (not replaces) this file on Windows every time `wrangler deploy` is run back-to-back |
-| "Cannot use edge runtime" build error | `export const runtime = 'edge'` on API routes produces no `.nft.json`, which Windows path bugs caused to land in the wrong bundle |
-| Node_modules patches lost | Patches to `createServerBundle.js` and `helper.js` are not committed and are wiped by `npm install` |
+| `scripts/preflight.mjs` | Blocks deploys from worktrees, off-main branches, dirty trees, or out-of-sync `origin/main` |
+| `scripts/fix-next-env.mjs` | Rebuilds `.open-next/cloudflare/next-env.mjs` from `.env.production` after every CF build (Windows-only OpenNext bug appends instead of replaces) |
+| `scripts/smoke-test.mjs` | Hits `/`, `/api/posts`, `/api/comments/{id}`, `/api/discover` against the deployed URL. Non-zero exit halts the deploy chain. |
+| `patches/` | Persists node_modules patches via `patch-package`. Re-applied automatically on `npm install` via the `postinstall` hook. |
 
----
+## URLs
 
-## The correct sequence for every deploy
-
-```
-code change → commit → next build → opennextjs-cloudflare build → deploy staging → verify → deploy production
-```
-
-Never skip a step. Never deploy production directly from a Windows build that hasn't been verified on staging.
-
----
-
-## Step-by-step
-
-### 1. Code changes
-- Work in a git worktree (Claude Code creates these automatically for each session)
-- Test the dev server (`npm run dev`) before committing
-- Commit to a feature branch, then merge to `main`
-
-### 2. Next.js build
-```bash
-npm run build
-```
-- Check that all API routes appear as `ƒ (Dynamic)` **without** the edge runtime marker
-- If any route shows `λ (Edge)` or similar, the `export const runtime = 'edge'` declaration is still present — remove it before continuing
-
-### 3. Verify node_modules patches are in place
-These two files have manually applied patches that are not committed. Check them after any `npm install`:
-
-**`node_modules/@opennextjs/aws/dist/build/helper.js`** — line ~346 should be:
-```js
-try { fs.rmSync(options.outputDir, { recursive: true, force: true }); } catch (_) {}
-```
-
-**`node_modules/@opennextjs/cloudflare/dist/cli/build/open-next/createServerBundle.js`** — lines ~39 and ~58-68 should normalize backslashes with `.replace(/\\/g, '/')`.
-
-If either patch is missing, re-apply it manually before building.
-
-### 4. OpenNext build
-```bash
-npx opennextjs-cloudflare build
-```
-- Confirm the output says only **one** server function: `default`
-- If it lists `api-posts`, `api-discover`, or `api-comments` as separate functions, stop — `open-next.config.ts` still has the broken separate function declarations
-
-### 5. Fix `next-env.mjs` (Windows-only bug)
-**Every time** on Windows, OpenNext appends to this file instead of replacing it. Before deploying, always check:
-```bash
-cat .open-next/cloudflare/next-env.mjs
-```
-It must have **exactly 3 lines**. If it has 6 or 9, truncate it:
-```
-export const production = {"NEXT_PUBLIC_REDDIT_PROXY_URL":"https://rededit-proxy.rededdit.workers.dev"};
-export const development = {};
-export const test = {};
-```
-
-### 6. Deploy to staging
-```bash
-npx wrangler deploy --env staging
-```
-- Staging URL: `https://rededit-staging.rededdit.workers.dev`
-- Staging uses the same `rededit-proxy` service binding as production
-
-### 7. Verify staging (do not skip)
-Open staging URL and confirm:
-- [ ] Home page loads posts
-- [ ] Subreddit page loads posts  
-- [ ] Clicking a post opens comments
-- [ ] Discover page loads and subreddit links work
-- [ ] Time filters (4h / 12h / 1d / 1w) change what posts are shown
-- [ ] Sort modes (hot / new / top) all work
-
-If any check fails → **stop, do not deploy to production**, investigate and fix.
-
-### 8. Deploy to production
-```bash
-npx wrangler deploy
-```
-- Production URL: `https://rededit.rededdit.workers.dev`
-
-### 9. Verify production
-Repeat the staging checklist on the production URL.
-
----
+- Staging: https://rededit-staging.rededdit.workers.dev
+- Production (Cloudflare): https://rededit.rededdit.workers.dev
+- Production (Vercel): auto-deploys on every push to `main` (separate target — see below)
 
 ## Rollback
 
-If production breaks:
 ```bash
-# List recent deployments
-npx wrangler deployments list
-
-# Roll back to a specific version
-npx wrangler rollback <version-id>
+wrangler deployments list           # find a known-good version id
+wrangler rollback <version-id>      # instant
 ```
 
-Rollback is instant. The last known-good version ID is noted in each deploy session.
+Rollback is per-environment. For staging: `wrangler rollback --env staging <id>`.
+
+For Vercel: use the Vercel dashboard ("Promote previous deployment").
 
 ---
 
-## Known Windows-specific gotchas
+## Vercel asymmetry — read this
 
-| Issue | When it occurs | Fix |
-|---|---|---|
-| `next-env.mjs` duplicate exports | Every consecutive `wrangler deploy` on Windows | Manually truncate to 3 lines before deploying |
-| `createServerBundle.js` path mismatch | After `npm install` | Re-apply the `.replace(/\\/g, '/')` patch |
-| `helper.js` EPERM on `.open-next` delete | After `npm install` | Re-apply the `try/catch` patch |
-| WSL hanging | Occasionally | Run deploy steps natively on Windows (with above patches) |
+Pushing to `main` triggers **two** independent deploys:
 
----
+1. **Cloudflare** — only if you run `npm run deploy:*` locally (or, post-Phase 2, via GitHub Actions). Has a staging gate.
+2. **Vercel** — auto-deploys to production on every push. **No staging gate.**
+
+Differences that matter:
+
+- Cloudflare Workers is edge by default; Vercel uses Lambda by default. Vercel needs `export const runtime = 'edge'` on API routes to bypass Reddit's IP block of Lambda IPs.
+- Removing the edge runtime to fix Cloudflare bundling silently breaks Vercel.
+- Until CI/CD on Linux lands (Phase 2), do NOT re-add `export const runtime = 'edge'` — the Windows OpenNext build mishandles it.
 
 ## Rules
 
-1. **Never deploy to production without staging passing first.**
-2. **Never add `export const runtime = 'edge'` to API routes.** CF Workers is already edge; the declaration breaks OpenNext's bundling.
-3. **Never declare edge function routes in `open-next.config.ts`** unless `wrangler.jsonc` routes are also configured to deploy those separate workers.
-4. **The `next-env.mjs` check is mandatory before every production deploy on Windows.**
+1. **Production is dual-target.** Cloudflare AND Vercel both serve traffic. Verify both after a deploy.
+2. **Never deploy to Cloudflare prod without staging passing first.**
+3. **Never add `export const runtime = 'edge'` to API routes** until Phase 2 (Linux CI) is in place.
+4. **Never declare separate edge functions in `open-next.config.ts`** without matching `wrangler.jsonc` worker routes — this caused incident `3ff2d3cb`.
+5. **Deploys run from the main checkout, never a worktree.** Preflight enforces this — multiple worktrees share `.open-next/` and race.
+
+## When something breaks at deploy
+
+1. Check which target failed (Cloudflare or Vercel).
+2. For Cloudflare: smoke test output points at the failing endpoint. Check `wrangler tail` for runtime errors.
+3. For Vercel: check the Vercel dashboard build/runtime logs.
+4. If both: it's a code bug, not a build/deploy issue.
+5. Roll back on the affected target while investigating.
+
+## Drift policy
+
+Any binding, env var, secret, or compat flag added to top-level `wrangler.jsonc` MUST also be added under `env.staging`. Any new Cloudflare secret set via `wrangler secret put` in prod must also be set with `--env staging`.
